@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.expo/
+
+# Native builds
+android/
+ios/
+
+# Environment
+.env
+.env.local
+
+# Build output
+dist/
+build/
+*.apk
+*.aab
+*.ipa
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Agents
+.agents/
+
+# Gemini
+.gemini/

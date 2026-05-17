@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NJ Jewellers — Refined Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: 'DM Sans', sans-serif; 
+    background: #060506; 
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+  
+  h1 { 
+    font-family: 'Playfair Display', serif;
+    text-align: center; 
+    font-size: 1.6rem; 
+    margin-bottom: 0.4rem;
+    color: #fff;
+  }
+  .page-sub { 
+    text-align: center; 
+    color: #666; 
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+  }
+
+  .phone-frame {
+    width: 375px;
+    min-height: 780px;
+    background: linear-gradient(180deg, #0D0708 0%, #110A0C 50%, #0A0708 100%);
+    border-radius: 40px;
+    padding: 2rem 1.25rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle noise texture */
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: 40px;
+  }
+
+  /* ===== HEADER ===== */
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.8rem;
+    position: relative;
+    z-index: 1;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-mark {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, #8B2525, #6B1A1A);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: #f0d4a8;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(123,31,31,0.3);
+  }
+  .header-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.72rem;
+    color: rgba(196,149,106,0.7);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+  }
+  .date-badge {
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.04);
+    padding: 5px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* ===== HERO GOLD CARD ===== */
+  .hero-card {
+    background: linear-gradient(135deg, rgba(123,31,31,0.12), rgba(212,175,55,0.06));
+    border: 1px solid rgba(212,175,55,0.1);
+    border-radius: 18px;
+    padding: 1.3rem 1.2rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .hero-label {
+    font-size: 0.58rem;
+    color: rgba(196,149,106,0.8);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .hero-change {
+    font-size: 0.62rem;
+    color: #5CB85C;
+    background: rgba(92,184,92,0.08);
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .hero-price {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #D4AF37;
+    line-height: 1;
+    margin-bottom: 0.15rem;
+    letter-spacing: -0.5px;
+  }
+  .hero-unit {
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ===== 24K SECONDARY ===== */
+  .sub-rate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+    z-index: 1;
+  }
+  .sub-rate-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .karat-dot {
+    width: 6px;
+    height: 6px;
+    background: #D4AF37;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+  .sub-rate-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+  }
+  .sub-rate-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* ===== SOVEREIGN ROW ===== */
+  .sovereign-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    z-index: 1;
+  }
+  .sov-label {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.35);
+  }
+  .sov-label span {
+    display: block;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 1px;
+  }
+  .sov-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* ===== SILVER SECTION ===== */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.7rem;
+    position: relative;
+    z-index: 1;
+  }
+  .silver-icon {
+    width: 6px;
+    height: 6px;
+    background: #C0C0C0;
+    border-radius: 50%;
+  }
+  .section-title {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .silver-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    z-index: 1;
+  }
+  .silver-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 0.75rem 0.8rem;
+  }
+  .silver-card-label {
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+  }
+  .silver-card-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: rgba(192,192,192,0.9);
+  }
+
+  /* ===== TREND LINE (Minimal sparkline) ===== */
+  .trend-section {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1rem;
+  }
+  .trend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+  }
+  .trend-title {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+  .trend-period {
+    display: flex;
+    gap: 0.3rem;
+  }
+  .period-pill {
+    font-size: 0.5rem;
+    padding: 3px 8px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .period-pill.active {
+    color: rgba(212,175,55,0.8);
+    background: rgba(212,175,55,0.08);
+    border-color: rgba(212,175,55,0.12);
+  }
+
+  .sparkline-container {
+    height: 60px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+  .sparkline-svg {
+    width: 100%;
+    height: 100%;
+  }
+  .spark-line {
+    fill: none;
+    stroke: rgba(212,175,55,0.5);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .spark-area {
+    fill: url(#goldGrad);
+  }
+  .spark-dot {
+    fill: #D4AF37;
+    filter: drop-shadow(0 0 4px rgba(212,175,55,0.5));
+  }
+
+  /* ===== FOOTER ===== */
+  .app-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding-top: 0.6rem;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-diamond {
+    font-size: 0.45rem;
+    color: rgba(123,31,31,0.5);
+  }
+  .footer-text {
+    font-size: 0.5rem;
+    color: rgba(255,255,255,0.18);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ===== PAGE LAYOUT ===== */
+  .feedback-area {
+    margin-top: 2rem;
+    text-align: center;
+    max-width: 500px;
+  }
+  .feedback-area h3 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .feedback-area p {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.6;
+  }
+  .change-list {
+    text-align: left;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .change-list li {
+    font-size: 0.78rem;
+    color: #888;
+    margin-bottom: 0.4rem;
+    list-style: none;
+    padding-left: 1rem;
+    position: relative;
+  }
+  .change-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #5CB85C;
+    font-size: 0.7rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>Refined: Dark Luxury — Minimal</h1>
+<p class="page-sub">Cleaner silver display · Minimal sparkline trend · Tighter spacing</p>
+
+<div class="phone-frame">
+  
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-left">
+      <div class="logo-mark">NJ</div>
+      <div class="header-brand">NJ Jewellers</div>
+    </div>
+    <div class="date-badge">18 May 2026</div>
+  </div>
+
+  <!-- Hero: 22K Gold -->
+  <div class="hero-card">
+    <div class="hero-top">
+      <div class="hero-label">22K Gold · Per Gram</div>
+      <div class="hero-change">▲ ₹35</div>
+    </div>
+    <div class="hero-price">₹7,245.00</div>
+    <div class="hero-unit">Chennai Rate · Updated 10:30 AM</div>
+  </div>
+
+  <!-- 24K Rate -->
+  <div class="sub-rate">
+    <div class="sub-rate-left">
+      <div class="karat-dot"></div>
+      <div class="sub-rate-label">24 Karat / gram</div>
+    </div>
+    <div class="sub-rate-value">₹7,890.00</div>
+  </div>
+
+  <!-- Sovereign -->
+  <div class="sovereign-row">
+    <div class="sov-label">
+      <span>22K Sovereign</span>
+      8 grams
+    </div>
+    <div class="sov-value">₹57,960.00</div>
+  </div>
+
+  <!-- Silver Section -->
+  <div class="section-divider">
+    <div class="silver-icon"></div>
+    <div class="section-title">Silver</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="silver-grid">
+    <div class="silver-card">
+      <div class="silver-card-label">Per Gram</div>
+      <div class="silver-card-value">₹98.50</div>
+    </div>
+    <div class="silver-card">
+      <div class="silver-card-label">Per Kilogram</div>
+      <div class="silver-card-value">₹98,500</div>
+    </div>
+  </div>
+
+  <!-- Trend Sparkline -->
+  <div class="trend-section">
+    <div class="trend-header">
+      <div class="trend-title">7-Day Trend</div>
+      <div class="trend-period">
+        <div class="period-pill active">7D</div>
+        <div class="period-pill">30D</div>
+      </div>
+    </div>
+    <div class="sparkline-container">
+      <svg class="sparkline-svg" viewBox="0 0 300 60" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(212,175,55,0.15)"/>
+            <stop offset="100%" stop-color="rgba(212,175,55,0)"/>
+          </linearGradient>
+        </defs>
+        <!-- Area fill -->
+        <path class="spark-area" d="M0,45 L43,38 L86,42 L129,30 L172,35 L215,22 L258,18 L300,12 L300,60 L0,60 Z"/>
+        <!-- Line -->
+        <path class="spark-line" d="M0,45 L43,38 L86,42 L129,30 L172,35 L215,22 L258,18 L300,12"/>
+        <!-- Current point -->
+        <circle class="spark-dot" cx="300" cy="12" r="3"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="app-footer">
+    <span class="footer-diamond">◆</span>
+    <span class="footer-text">Sowcarpet, Chennai</span>
+    <span class="footer-diamond">◆</span>
+  </div>
+</div>
+
+<div class="feedback-area">
+  <h3>What changed</h3>
+  <ul class="change-list">
+    <li>Replaced chunky bar chart with minimal SVG sparkline — one clean line with gradient fade</li>
+    <li>Silver section now separated with a minimal divider line, two clean cards side by side</li>
+    <li>Tighter overall spacing, more breathing room between sections</li>
+    <li>Added 7D / 30D period toggle pills (minimal, not dominant)</li>
+    <li>Footer reduced to just location — subtle, ambient branding</li>
+    <li>Price precision to ₹X,XXX.00 format (accurate to .2 as requested)</li>
+  </ul>
+  <p style="margin-top:1rem;">Does this feel right? Let me know in the terminal.</p>
+</div>
+
+</body>
+</html>

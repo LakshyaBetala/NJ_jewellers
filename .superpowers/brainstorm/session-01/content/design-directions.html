@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NJ Jewellers — Design Directions</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: 'DM Sans', sans-serif; 
+    background: #0a0a0a; 
+    color: #e0e0e0;
+    padding: 2rem;
+  }
+  
+  h1 { 
+    font-family: 'Playfair Display', serif;
+    text-align: center; 
+    font-size: 1.8rem; 
+    margin-bottom: 0.5rem;
+    color: #fff;
+  }
+  .subtitle { 
+    text-align: center; 
+    color: #888; 
+    margin-bottom: 2.5rem;
+    font-size: 0.95rem;
+  }
+
+  .designs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .design-card {
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+  }
+  .design-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .design-card.selected {
+    border-color: #D4AF37;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+  }
+
+  .design-label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.7);
+    color: #D4AF37;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+  }
+
+  .design-info {
+    padding: 1.2rem 1.5rem;
+    background: #111;
+  }
+  .design-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+  .design-info p {
+    font-size: 0.85rem;
+    color: #888;
+    line-height: 1.5;
+  }
+
+  /* ========== DESIGN A: DARK LUXURY ========== */
+  .phone-a {
+    background: linear-gradient(180deg, #0D0708 0%, #1A0A0D 100%);
+    padding: 1.5rem 1rem;
+    min-height: 520px;
+  }
+  .phone-a .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .phone-a .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: #7B1F1F;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: #fff;
+    font-size: 1rem;
+  }
+  .phone-a .brand-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    color: #C4956A;
+    letter-spacing: 2px;
+  }
+  .phone-a .date-badge {
+    font-size: 0.65rem;
+    color: #666;
+    background: rgba(255,255,255,0.05);
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+
+  .phone-a .hero-price {
+    background: linear-gradient(135deg, rgba(123,31,31,0.15), rgba(212,175,55,0.08));
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 16px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .phone-a .price-label {
+    font-size: 0.6rem;
+    color: #C4956A;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.3rem;
+  }
+  .phone-a .price-value {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #D4AF37;
+  }
+  .phone-a .price-unit {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 2px;
+  }
+  .phone-a .price-change {
+    font-size: 0.7rem;
+    color: #4CAF50;
+    margin-top: 4px;
+  }
+
+  .phone-a .secondary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .phone-a .sec-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 0.8rem;
+  }
+  .phone-a .sec-card .label {
+    font-size: 0.55rem;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .phone-a .sec-card .val {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e0e0e0;
+    margin-top: 0.2rem;
+  }
+
+  .phone-a .chart-placeholder {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 0.5rem 0.5rem;
+    gap: 3px;
+    overflow: hidden;
+  }
+  .phone-a .chart-bar {
+    flex: 1;
+    background: linear-gradient(to top, #7B1F1F, #D4AF37);
+    border-radius: 3px 3px 0 0;
+    opacity: 0.6;
+  }
+
+  /* ========== DESIGN B: CLEAN WHITE ========== */
+  .phone-b {
+    background: #FAFAF8;
+    padding: 1.5rem 1rem;
+    min-height: 520px;
+  }
+  .phone-b .app-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.3rem;
+  }
+  .phone-b .logo-circle {
+    width: 32px;
+    height: 32px;
+    background: #7B1F1F;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: #fff;
+    font-size: 0.85rem;
+  }
+  .phone-b .header-title {
+    font-family: 'Playfair Display', serif;
+    color: #1a1a1a;
+    font-size: 1rem;
+  }
+  .phone-b .date-line {
+    font-size: 0.65rem;
+    color: #999;
+    margin-bottom: 1.2rem;
+    padding-left: 42px;
+  }
+
+  .phone-b .gold-section {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.2rem;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    border: 1px solid #f0ece4;
+  }
+  .phone-b .section-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+  .phone-b .gold-dot {
+    width: 8px;
+    height: 8px;
+    background: #D4AF37;
+    border-radius: 50%;
+  }
+  .phone-b .silver-dot {
+    width: 8px;
+    height: 8px;
+    background: #C0C0C0;
+    border-radius: 50%;
+  }
+  .phone-b .section-label {
+    font-size: 0.7rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .phone-b .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #f5f3ee;
+  }
+  .phone-b .price-row:last-child { border: none; }
+  .phone-b .price-type {
+    font-size: 0.75rem;
+    color: #555;
+  }
+  .phone-b .price-amt {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .phone-b .price-chg {
+    font-size: 0.6rem;
+    color: #4CAF50;
+    margin-left: 4px;
+  }
+
+  .phone-b .chart-mini {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    border: 1px solid #f0ece4;
+    margin-bottom: 0.8rem;
+  }
+  .phone-b .chart-wave {
+    height: 50px;
+    background: linear-gradient(to right, rgba(123,31,31,0.05), rgba(123,31,31,0.1));
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .phone-b .chart-wave::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(212,175,55,0.1), transparent);
+    border-radius: 0 0 8px 8px;
+  }
+
+  .phone-b .footer-brand {
+    text-align: center;
+    font-size: 0.55rem;
+    color: #bbb;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 0.6rem;
+  }
+
+  /* ========== DESIGN C: BOLD MAROON ========== */
+  .phone-c {
+    background: linear-gradient(180deg, #7B1F1F 0%, #5A1515 40%, #1a0a0a 100%);
+    padding: 1.5rem 1rem;
+    min-height: 520px;
+  }
+  .phone-c .app-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .phone-c .brand-name {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .phone-c .brand-sub {
+    font-size: 0.5rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .phone-c .date-pill {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .phone-c .big-price-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .phone-c .karat-badge {
+    display: inline-block;
+    background: #D4AF37;
+    color: #1a0a0a;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 0.6rem;
+  }
+  .phone-c .big-number {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+  .phone-c .big-unit {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.3rem;
+  }
+  .phone-c .change-tag {
+    display: inline-block;
+    background: rgba(76,175,80,0.15);
+    color: #4CAF50;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+  }
+
+  .phone-c .metal-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .phone-c .tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.05);
+  }
+  .phone-c .tab.active {
+    color: #D4AF37;
+    background: rgba(212,175,55,0.12);
+    border: 1px solid rgba(212,175,55,0.25);
+  }
+
+  .phone-c .rates-list {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 0.8rem;
+  }
+  .phone-c .rate-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .phone-c .rate-item:last-child { border: none; }
+  .phone-c .rate-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.6);
+  }
+  .phone-c .rate-val {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Selection indicator */
+  .click-hint {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #555;
+    margin-top: 2rem;
+    font-style: italic;
+  }
+
+  @media (max-width: 900px) {
+    .designs-grid {
+      grid-template-columns: 1fr;
+      max-width: 400px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Which design direction feels right?</h1>
+<p class="subtitle">Click to select your preferred aesthetic. Prices shown are example data.</p>
+
+<div class="designs-grid">
+
+  <!-- DESIGN A: Dark Luxury -->
+  <div class="design-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="design-label">A</div>
+    <div class="phone-a">
+      <div class="app-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="logo-mark">NJ</div>
+          <div class="brand-text">NJ JEWELLERS</div>
+        </div>
+        <div class="date-badge">18 May 2026</div>
+      </div>
+
+      <div class="hero-price">
+        <div class="price-label">22K Gold • Per Gram</div>
+        <div class="price-value">₹7,245</div>
+        <div class="price-unit">Chennai Rate</div>
+        <div class="price-change">▲ ₹35 (+0.48%)</div>
+      </div>
+
+      <div class="secondary-grid">
+        <div class="sec-card">
+          <div class="label">24K / Gram</div>
+          <div class="val">₹7,890</div>
+        </div>
+        <div class="sec-card">
+          <div class="label">22K / Sovereign</div>
+          <div class="val">₹57,960</div>
+        </div>
+        <div class="sec-card">
+          <div class="label">Silver / Gram</div>
+          <div class="val">₹98.50</div>
+        </div>
+        <div class="sec-card">
+          <div class="label">Silver / KG</div>
+          <div class="val">₹98,500</div>
+        </div>
+      </div>
+
+      <div class="chart-placeholder">
+        <div class="chart-bar" style="height:40%"></div>
+        <div class="chart-bar" style="height:55%"></div>
+        <div class="chart-bar" style="height:45%"></div>
+        <div class="chart-bar" style="height:60%"></div>
+        <div class="chart-bar" style="height:50%"></div>
+        <div class="chart-bar" style="height:70%"></div>
+        <div class="chart-bar" style="height:80%"></div>
+        <div class="chart-bar" style="height:65%"></div>
+        <div class="chart-bar" style="height:75%"></div>
+        <div class="chart-bar" style="height:85%"></div>
+        <div class="chart-bar" style="height:70%"></div>
+        <div class="chart-bar" style="height:90%"></div>
+        <div class="chart-bar" style="height:78%"></div>
+        <div class="chart-bar" style="height:82%"></div>
+      </div>
+    </div>
+    <div class="design-info">
+      <h3>Dark Luxury</h3>
+      <p>Deep dark tones with gold accents. Feels like a premium finance app. Maroon brand color woven subtly into gradients. High-end, investor-grade aesthetic.</p>
+    </div>
+  </div>
+
+  <!-- DESIGN B: Clean Ivory -->
+  <div class="design-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="design-label">B</div>
+    <div class="phone-b">
+      <div class="app-header">
+        <div class="logo-circle">NJ</div>
+        <div class="header-title">NJ Jewellers</div>
+      </div>
+      <div class="date-line">Sunday, 18 May 2026 • Chennai</div>
+
+      <div class="gold-section">
+        <div class="section-head">
+          <div class="gold-dot"></div>
+          <div class="section-label">Gold Rates</div>
+        </div>
+        <div class="price-row">
+          <span class="price-type">22 Karat / gram</span>
+          <span><span class="price-amt">₹7,245</span><span class="price-chg">+₹35</span></span>
+        </div>
+        <div class="price-row">
+          <span class="price-type">24 Karat / gram</span>
+          <span class="price-amt">₹7,890</span>
+        </div>
+        <div class="price-row">
+          <span class="price-type">22K Sovereign (8g)</span>
+          <span class="price-amt">₹57,960</span>
+        </div>
+      </div>
+
+      <div class="gold-section">
+        <div class="section-head">
+          <div class="silver-dot"></div>
+          <div class="section-label">Silver Rates</div>
+        </div>
+        <div class="price-row">
+          <span class="price-type">Per gram</span>
+          <span class="price-amt">₹98.50</span>
+        </div>
+        <div class="price-row">
+          <span class="price-type">Per kilogram</span>
+          <span class="price-amt">₹98,500</span>
+        </div>
+      </div>
+
+      <div class="chart-mini">
+        <div class="section-label" style="margin-bottom:0.5rem;font-size:0.6rem;color:#aaa;">7-Day Trend</div>
+        <div class="chart-wave"></div>
+      </div>
+
+      <div class="footer-brand">Trusted Since Generations • Sowcarpet, Chennai</div>
+    </div>
+    <div class="design-info">
+      <h3>Clean Ivory</h3>
+      <p>Light, warm white base. Feels like a premium editorial app. Maroon as accent, gold dots. Elegant, easy to read. Approachable for all ages.</p>
+    </div>
+  </div>
+
+  <!-- DESIGN C: Bold Maroon -->
+  <div class="design-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="design-label">C</div>
+    <div class="phone-c">
+      <div class="app-top">
+        <div>
+          <div class="brand-name">NJ Jewellers</div>
+          <div class="brand-sub">Chennai Gold Rates</div>
+        </div>
+        <div class="date-pill">18 May</div>
+      </div>
+
+      <div class="big-price-card">
+        <div class="karat-badge">22 KARAT</div>
+        <div class="big-number">₹7,245</div>
+        <div class="big-unit">per gram • Chennai</div>
+        <div class="change-tag">▲ +0.48% today</div>
+      </div>
+
+      <div class="metal-tabs">
+        <div class="tab active">Gold</div>
+        <div class="tab">Silver</div>
+        <div class="tab">History</div>
+      </div>
+
+      <div class="rates-list">
+        <div class="rate-item">
+          <span class="rate-label">24K / gram</span>
+          <span class="rate-val">₹7,890</span>
+        </div>
+        <div class="rate-item">
+          <span class="rate-label">22K / sovereign</span>
+          <span class="rate-val">₹57,960</span>
+        </div>
+        <div class="rate-item">
+          <span class="rate-label">18K / gram</span>
+          <span class="rate-val">₹5,434</span>
+        </div>
+      </div>
+    </div>
+    <div class="design-info">
+      <h3>Bold Maroon</h3>
+      <p>Brand-forward with maroon gradient. Glassmorphic cards with gold accents. Tab navigation between metals. Strong brand presence, modern feel.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="click-hint">Click on a design to select it, then tell me in the terminal.</p>
+
+<script>
+function toggleSelect(el) {
+  document.querySelectorAll('.design-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  
+  // Record event for the companion system
+  if (window.__recordEvent) {
+    window.__recordEvent({ type: 'click', choice: el.dataset.choice, text: el.querySelector('h3').textContent });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "NJ Jewellers",
+    "slug": "nj-jewellers",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0D0708"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.njjewellers.goldprice"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#0D0708"
+      },
+      "package": "com.njjewellers.goldprice",
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
