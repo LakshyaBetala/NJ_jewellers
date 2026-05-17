@@ -1,9 +1,9 @@
 /**
  * NJ Jewellers — Chennai Gold & Silver Prices
- * Main Application Screen
  *
- * Dark Luxury Minimal aesthetic with ambient brand presence.
- * Single scrollable screen showing today's gold/silver rates.
+ * Premium minimal dashboard.
+ * Two-zone architecture: warm gold → cool silver.
+ * Clear hierarchy: one hero price, secondary rates, then silver.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -19,6 +19,7 @@ import {
   StatusBar,
   Platform,
   ImageStyle,
+  Dimensions,
 } from 'react-native';
 import { useFonts } from 'expo-font';
 import {
@@ -38,41 +39,57 @@ import { useGoldPrices } from './hooks/useGoldPrices';
 import { SparklineChart } from './components/SparklineChart';
 import { AboutModal } from './components/AboutModal';
 
-// Keep splash screen visible while fonts load
-try {
-  SplashScreen.preventAutoHideAsync();
-} catch (e) {
-  // Ignore on web
+try { SplashScreen.preventAutoHideAsync(); } catch (e) {}
+
+const { width: SCREEN_W } = Dimensions.get('window');
+
+/* ── helpers ── */
+function fmtPrice(v: number): string {
+  return '₹' + v.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtPriceShort(v: number): string {
+  return '₹' + v.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+function fmtDate(): string {
+  return new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function fmtFullDate(): string {
+  return new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function formatPrice(value: number): string {
-  return '₹' + value.toLocaleString('en-IN', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+/* ── change badge component ── */
+function ChangeBadge({ value, positive }: { value: number; positive: boolean }) {
+  if (value === 0) return null;
+  return (
+    <View style={[s.changeBadge, { backgroundColor: positive ? 'rgba(92,184,92,0.1)' : 'rgba(231,76,60,0.1)' }]}>
+      <Text style={[s.changeText, { color: positive ? '#5CB85C' : '#E74C3C' }]}>
+        {positive ? '↑' : '↓'} ₹{Math.abs(value).toFixed(0)}
+      </Text>
+    </View>
+  );
 }
 
-function formatDate(): string {
-  const now = new Date();
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  };
-  return now.toLocaleDateString('en-IN', options);
+/* ── secondary rate row ── */
+function RateRow({ label, sublabel, value, accent }: {
+  label: string; sublabel?: string; value: string; accent: string;
+}) {
+  return (
+    <View style={s.rateRow}>
+      <View style={s.rateRowLeft}>
+        <View style={[s.accentBar, { backgroundColor: accent }]} />
+        <View>
+          <Text style={s.rateLabel}>{label}</Text>
+          {sublabel && <Text style={s.rateSublabel}>{sublabel}</Text>}
+        </View>
+      </View>
+      <Text style={s.rateValue}>{value}</Text>
+    </View>
+  );
 }
 
-function formatFullDate(): string {
-  const now = new Date();
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  };
-  return now.toLocaleDateString('en-IN', options);
-}
-
+/* ════════════════════════════════════════════════
+   MAIN APP
+   ════════════════════════════════════════════════ */
 export default function App() {
   const [fontsLoaded] = useFonts({
     PlayfairDisplay_400Regular,
@@ -88,25 +105,21 @@ export default function App() {
   const { prices, history, loading, error, refreshing, isLive, onRefresh } = useGoldPrices();
 
   useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync().catch(() => {});
-    }
+    if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return <View style={{ flex: 1, backgroundColor: Colors.bgPrimary }} />;
-  }
+  if (!fontsLoaded) return <View style={{ flex: 1, backgroundColor: '#0A0708' }} />;
 
-  const isPositiveGold = (prices?.goldChange ?? 0) >= 0;
-  const isPositiveSilver = (prices?.silverChange ?? 0) >= 0;
+  const gUp = (prices?.goldChange ?? 0) >= 0;
+  const sUp = (prices?.silverChange ?? 0) >= 0;
 
   return (
-    <View style={styles.rootContainer}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.bgPrimary} />
+    <View style={s.root}>
+      <StatusBar barStyle="light-content" backgroundColor="#0A0708" />
 
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        style={s.scroll}
+        contentContainerStyle={s.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -114,458 +127,454 @@ export default function App() {
             onRefresh={onRefresh}
             tintColor={Colors.gold}
             colors={[Colors.gold]}
-            progressBackgroundColor={Colors.bgSecondary}
+            progressBackgroundColor="#110A0C"
           />
         }
       >
-        {/* ===== HEADER ===== */}
-        <View style={styles.header}>
+        {/* ════ HEADER ════ */}
+        <View style={s.header}>
           <TouchableOpacity
-            style={styles.headerLeft}
+            style={s.headerBrand}
             onPress={() => setAboutVisible(true)}
             activeOpacity={0.7}
           >
-            <View style={styles.logoMark}>
+            <View style={s.logoWrap}>
               <Image
                 source={require('./assets/logo.png')}
-                style={styles.logoImage as ImageStyle}
+                style={s.logoImg as ImageStyle}
                 resizeMode="contain"
               />
             </View>
-            <Text style={styles.brandText}>NJ Jewellers</Text>
+            <View>
+              <Text style={s.brandName}>NJ Jewellers</Text>
+              <Text style={s.brandSub}>Sowcarpet, Chennai</Text>
+            </View>
           </TouchableOpacity>
-          <View style={styles.dateBadge}>
-            <Text style={styles.dateText}>{formatDate()}</Text>
+          <View style={s.headerRight}>
+            <Text style={s.headerDate}>{fmtDate()}</Text>
           </View>
         </View>
 
-        {/* Full date line */}
-        <Text style={styles.fullDate}>{formatFullDate()}</Text>
+        {/* ════ DATE LINE ════ */}
+        <Text style={s.fullDate}>{fmtFullDate()}</Text>
 
         {loading && !prices ? (
-          <View style={styles.loadingContainer}>
+          <View style={s.loadingWrap}>
             <ActivityIndicator size="large" color={Colors.gold} />
-            <Text style={styles.loadingText}>Loading prices...</Text>
+            <Text style={s.loadingText}>Fetching rates…</Text>
           </View>
         ) : prices ? (
           <>
-            {/* ===== HERO: 22K GOLD PER GRAM ===== */}
-            <View style={styles.heroCard}>
-              <View style={styles.heroTop}>
-                <Text style={styles.heroLabel}>22K Gold · Per Gram</Text>
-                <View
-                  style={[
-                    styles.changeBadge,
-                    { backgroundColor: isPositiveGold ? Colors.positiveBg : Colors.negativeBg },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.changeText,
-                      { color: isPositiveGold ? Colors.positive : Colors.negative },
-                    ]}
-                  >
-                    {isPositiveGold ? '▲' : '▼'} ₹{Math.abs(prices.goldChange).toFixed(2)}
-                  </Text>
+            {/* ═══════════════════════════════
+                GOLD ZONE — warm tones
+               ═══════════════════════════════ */}
+            <View style={s.sectionHeader}>
+              <View style={s.sectionIcon}>
+                <Text style={s.sectionEmoji}>✦</Text>
+              </View>
+              <Text style={s.sectionLabel}>Gold Rates</Text>
+              <View style={s.sectionRule} />
+              <ChangeBadge value={prices.goldChange} positive={gUp} />
+            </View>
+
+            {/* Hero: 22K — the rate that matters most */}
+            <View style={s.heroCard}>
+              <View style={s.heroInner}>
+                <Text style={s.heroKarat}>22K</Text>
+                <View style={s.heroPriceWrap}>
+                  <Text style={s.heroPrice}>{fmtPrice(prices.gold22KPerGram)}</Text>
+                  <Text style={s.heroUnit}>per gram</Text>
                 </View>
               </View>
-              <Text style={styles.heroPrice}>
-                {formatPrice(prices.gold22KPerGram)}
-              </Text>
-              <Text style={styles.heroUnit}>
-                Chennai Rate · Updated {prices.lastUpdated}
+              <Text style={s.heroMeta}>
+                Chennai Rate · {prices.lastUpdated}
               </Text>
             </View>
 
-            {/* ===== 24K RATE ROW ===== */}
-            <View style={styles.rateRow}>
-              <View style={styles.rateRowLeft}>
-                <View style={styles.goldDot} />
-                <Text style={styles.rateLabel}>24 Karat / gram</Text>
-              </View>
-              <Text style={styles.rateValue}>{formatPrice(prices.gold24KPerGram)}</Text>
+            {/* Secondary gold rates */}
+            <View style={s.rateGroup}>
+              <RateRow
+                label="24 Karat"
+                sublabel="per gram"
+                value={fmtPrice(prices.gold24KPerGram)}
+                accent={Colors.gold}
+              />
+              <RateRow
+                label="22K Sovereign"
+                sublabel="8 grams"
+                value={fmtPriceShort(prices.gold22KSovereign)}
+                accent={Colors.goldMuted}
+              />
+              <RateRow
+                label="18 Karat"
+                sublabel="per gram"
+                value={fmtPrice(prices.gold18KPerGram)}
+                accent="rgba(212,175,55,0.3)"
+              />
             </View>
 
-            {/* ===== SOVEREIGN ROW ===== */}
-            <View style={styles.rateRow}>
-              <View style={styles.rateRowLeft}>
-                <View style={styles.goldDot} />
-                <View>
-                  <Text style={styles.rateLabel}>22K Sovereign</Text>
-                  <Text style={styles.rateSublabel}>8 grams</Text>
-                </View>
+            {/* ═══════════════════════════════
+                SILVER ZONE — cool tones
+               ═══════════════════════════════ */}
+            <View style={[s.sectionHeader, { marginTop: Spacing.xxl }]}>
+              <View style={[s.sectionIcon, { backgroundColor: 'rgba(192,192,192,0.08)' }]}>
+                <Text style={s.sectionEmoji}>◈</Text>
               </View>
-              <Text style={styles.rateValue}>{formatPrice(prices.gold22KSovereign)}</Text>
+              <Text style={[s.sectionLabel, { color: Colors.silver }]}>Silver Rates</Text>
+              <View style={s.sectionRule} />
+              <ChangeBadge value={prices.silverChange} positive={sUp} />
             </View>
 
-            {/* ===== 18K ROW ===== */}
-            <View style={[styles.rateRow, { marginBottom: Spacing.xl }]}>
-              <View style={styles.rateRowLeft}>
-                <View style={[styles.goldDot, { opacity: 0.4 }]} />
-                <Text style={styles.rateLabel}>18 Karat / gram</Text>
+            <View style={s.silverRow}>
+              <View style={s.silverCard}>
+                <Text style={s.silverCardLabel}>Per Gram</Text>
+                <Text style={s.silverCardPrice}>{fmtPrice(prices.silverPerGram)}</Text>
               </View>
-              <Text style={styles.rateValue}>{formatPrice(prices.gold18KPerGram)}</Text>
-            </View>
-
-            {/* ===== SILVER SECTION ===== */}
-            <View style={styles.sectionDivider}>
-              <View style={styles.silverDot} />
-              <Text style={styles.sectionTitle}>Silver</Text>
-              <View style={styles.sectionLine} />
-              {prices.silverChange !== 0 && (
-                <Text
-                  style={[
-                    styles.sectionChange,
-                    { color: isPositiveSilver ? Colors.positive : Colors.negative },
-                  ]}
-                >
-                  {isPositiveSilver ? '▲' : '▼'} ₹{Math.abs(prices.silverChange).toFixed(2)}
-                </Text>
-              )}
-            </View>
-
-            <View style={styles.silverGrid}>
-              <View style={styles.silverCard}>
-                <Text style={styles.silverCardLabel}>Per Gram</Text>
-                <Text style={styles.silverCardValue}>
-                  {formatPrice(prices.silverPerGram)}
-                </Text>
-              </View>
-              <View style={styles.silverCard}>
-                <Text style={styles.silverCardLabel}>Per Kilogram</Text>
-                <Text style={styles.silverCardValue}>
-                  {formatPrice(prices.silverPerKg)}
-                </Text>
+              <View style={s.silverDivider} />
+              <View style={s.silverCard}>
+                <Text style={s.silverCardLabel}>Per Kilogram</Text>
+                <Text style={s.silverCardPrice}>{fmtPriceShort(prices.silverPerKg)}</Text>
               </View>
             </View>
 
-            {/* ===== SPARKLINE CHART ===== */}
+            {/* ═══════════════════════════════
+                TREND CHART
+               ═══════════════════════════════ */}
             {history.length > 1 && (
-              <SparklineChart history={history} />
+              <View style={{ marginTop: Spacing.xxl }}>
+                <SparklineChart history={history} />
+              </View>
             )}
 
-            {/* ===== FOOTER ===== */}
-            <View style={styles.footer}>
-              <Text style={styles.footerDiamond}>◆</Text>
-              <Text style={styles.footerText}>Sowcarpet, Chennai</Text>
-              <Text style={styles.footerDiamond}>◆</Text>
+            {/* ═══════════════════════════════
+                FOOTER
+               ═══════════════════════════════ */}
+            <View style={s.footer}>
+              <View style={s.footerLine} />
+              <Text style={s.footerText}>NJ Jewellers · Sowcarpet</Text>
+              <View style={s.footerLine} />
             </View>
-
-            {/* Pull to refresh hint */}
-            <Text style={styles.refreshHint}>Pull down to refresh</Text>
+            <Text style={s.pullHint}>Pull down to refresh</Text>
           </>
         ) : error ? (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>Unable to load prices</Text>
-            <Text style={styles.errorSubtext}>{error}</Text>
-            <TouchableOpacity style={styles.retryButton} onPress={onRefresh}>
-              <Text style={styles.retryText}>Retry</Text>
+          <View style={s.errorWrap}>
+            <Text style={s.errorTitle}>Unable to load prices</Text>
+            <Text style={s.errorSub}>{error}</Text>
+            <TouchableOpacity style={s.retryBtn} onPress={onRefresh}>
+              <Text style={s.retryText}>Try Again</Text>
             </TouchableOpacity>
           </View>
         ) : null}
       </ScrollView>
 
-      {/* About Modal */}
-      <AboutModal
-        visible={aboutVisible}
-        onClose={() => setAboutVisible(false)}
-      />
+      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  rootContainer: {
-    flex: 1,
-    backgroundColor: Colors.bgPrimary,
-  },
-  scrollView: {
-    flex: 1,
-  },
+/* ════════════════════════════════════════════════
+   STYLES
+   ════════════════════════════════════════════════ */
+const s = StyleSheet.create({
+  root: { flex: 1, backgroundColor: '#0A0708' },
+  scroll: { flex: 1 },
   scrollContent: {
-    paddingHorizontal: Spacing.xl,
-    paddingTop: Platform.OS === 'android' ? 48 : 56,
-    paddingBottom: 40,
+    paddingHorizontal: 22,
+    paddingTop: Platform.OS === 'android' ? 48 : 58,
+    paddingBottom: 50,
   },
 
-  // Header
+  /* ── header ── */
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: Spacing.xs,
+    marginBottom: 4,
   },
-  headerLeft: {
+  headerBrand: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
-  logoMark: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+  logoWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     backgroundColor: Colors.maroon,
     overflow: 'hidden' as const,
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.maroon,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
   },
-  logoImage: {
-    width: 28,
-    height: 28,
-  },
-  brandText: {
+  logoImg: { width: 30, height: 30 },
+  brandName: {
     fontFamily: Fonts.displaySemiBold,
-    fontSize: 13,
-    color: 'rgba(196,149,106,0.7)',
-    letterSpacing: 1.5,
+    fontSize: 15,
+    color: Colors.goldMuted,
+    letterSpacing: 0.5,
   },
-  dateBadge: {
-    backgroundColor: 'rgba(255,255,255,0.04)',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 14,
+  brandSub: {
+    fontFamily: Fonts.body,
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.2)',
+    marginTop: 1,
+  },
+  headerRight: {
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.05)',
   },
-  dateText: {
+  headerDate: {
     fontFamily: Fonts.bodyMedium,
-    fontSize: FontSizes.micro,
-    color: 'rgba(255,255,255,0.35)',
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.3)',
   },
 
-  // Full date
+  /* ── date ── */
   fullDate: {
     fontFamily: Fonts.body,
-    fontSize: FontSizes.micro,
-    color: 'rgba(255,255,255,0.2)',
-    marginBottom: Spacing.xxl,
-    marginLeft: 46,
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.15)',
+    marginBottom: 28,
+    marginLeft: 52,
   },
 
-  // Hero card
-  heroCard: {
-    borderRadius: BorderRadius.xl,
-    padding: Spacing.xl,
-    marginBottom: Spacing.md,
-    backgroundColor: 'rgba(123,31,31,0.1)',
-    borderWidth: 1,
-    borderColor: Colors.goldBorder,
-  },
-  heroTop: {
+  /* ── section header ── */
+  sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: Spacing.sm,
+    gap: 10,
+    marginBottom: 16,
   },
-  heroLabel: {
+  sectionIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: 'rgba(212,175,55,0.08)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sectionEmoji: {
+    fontSize: 12,
+    color: Colors.gold,
+  },
+  sectionLabel: {
     fontFamily: Fonts.bodySemiBold,
-    fontSize: FontSizes.micro,
+    fontSize: 12,
     color: Colors.goldMuted,
     textTransform: 'uppercase',
-    letterSpacing: 2,
+    letterSpacing: 2.5,
   },
+  sectionRule: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+
+  /* ── change badge ── */
   changeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.sm,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   changeText: {
     fontFamily: Fonts.bodySemiBold,
-    fontSize: FontSizes.micro,
+    fontSize: 11,
+  },
+
+  /* ── hero card ── */
+  heroCard: {
+    borderRadius: 20,
+    paddingHorizontal: 22,
+    paddingTop: 22,
+    paddingBottom: 16,
+    marginBottom: 14,
+    backgroundColor: 'rgba(123,31,31,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(212,175,55,0.08)',
+  },
+  heroInner: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 14,
+    marginBottom: 10,
+  },
+  heroKarat: {
+    fontFamily: Fonts.display,
+    fontSize: 28,
+    color: 'rgba(212,175,55,0.2)',
+    lineHeight: 32,
+  },
+  heroPriceWrap: {
+    flex: 1,
   },
   heroPrice: {
     fontFamily: Fonts.bodyBold,
-    fontSize: FontSizes.heroPrice,
+    fontSize: 36,
     color: Colors.gold,
     letterSpacing: -0.5,
-    marginBottom: 2,
+    lineHeight: 40,
   },
   heroUnit: {
     fontFamily: Fonts.body,
-    fontSize: FontSizes.micro,
-    color: Colors.textTertiary,
+    fontSize: 11,
+    color: 'rgba(212,175,55,0.4)',
+    marginTop: 2,
+  },
+  heroMeta: {
+    fontFamily: Fonts.body,
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.18)',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255,255,255,0.04)',
+    paddingTop: 10,
   },
 
-  // Rate rows
+  /* ── rate rows ── */
+  rateGroup: {
+    gap: 6,
+    marginBottom: 8,
+  },
   rateRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: Colors.bgCard,
-    borderWidth: 1,
-    borderColor: Colors.bgCardBorder,
-    borderRadius: BorderRadius.lg,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md + 2,
-    marginBottom: Spacing.sm,
+    backgroundColor: 'rgba(255,255,255,0.02)',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
   rateRowLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: 12,
   },
-  goldDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Colors.gold,
-    opacity: 0.6,
+  accentBar: {
+    width: 3,
+    height: 28,
+    borderRadius: 2,
   },
   rateLabel: {
-    fontFamily: Fonts.body,
-    fontSize: FontSizes.bodySmall,
-    color: Colors.textSecondary,
+    fontFamily: Fonts.bodyMedium,
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.55)',
   },
   rateSublabel: {
     fontFamily: Fonts.body,
-    fontSize: FontSizes.nano,
-    color: Colors.textTertiary,
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.2)',
     marginTop: 1,
   },
   rateValue: {
     fontFamily: Fonts.bodyBold,
-    fontSize: FontSizes.sectionPrice,
-    color: Colors.textPrimary,
+    fontSize: 17,
+    color: 'rgba(255,255,255,0.8)',
   },
 
-  // Silver section
-  sectionDivider: {
+  /* ── silver ── */
+  silverRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    marginBottom: Spacing.md,
-  },
-  silverDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Colors.silver,
-  },
-  sectionTitle: {
-    fontFamily: Fonts.bodySemiBold,
-    fontSize: FontSizes.micro,
-    color: Colors.textTertiary,
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-  },
-  sectionLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: Colors.divider,
-  },
-  sectionChange: {
-    fontFamily: Fonts.bodySemiBold,
-    fontSize: FontSizes.nano,
-  },
-  silverGrid: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    marginBottom: Spacing.xl,
+    alignItems: 'stretch',
+    backgroundColor: 'rgba(192,192,192,0.03)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(192,192,192,0.06)',
+    overflow: 'hidden',
   },
   silverCard: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.02)',
-    borderWidth: 1,
-    borderColor: Colors.bgCardBorder,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.md,
+    paddingHorizontal: 18,
+    paddingVertical: 18,
+  },
+  silverDivider: {
+    width: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(192,192,192,0.1)',
   },
   silverCardLabel: {
     fontFamily: Fonts.body,
-    fontSize: FontSizes.nano,
-    color: Colors.textTertiary,
+    fontSize: 10,
+    color: 'rgba(192,192,192,0.4)',
     textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 4,
+    letterSpacing: 1.5,
+    marginBottom: 6,
   },
-  silverCardValue: {
+  silverCardPrice: {
     fontFamily: Fonts.bodyBold,
-    fontSize: FontSizes.sectionPrice,
-    color: Colors.silverMuted,
+    fontSize: 20,
+    color: 'rgba(192,192,192,0.85)',
   },
 
-  // Footer
+  /* ── footer ── */
   footer: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    gap: 6,
-    marginTop: Spacing.sm,
+    gap: 12,
+    marginTop: 28,
   },
-  footerDiamond: {
-    fontSize: 6,
-    color: 'rgba(123,31,31,0.5)',
+  footerLine: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(255,255,255,0.04)',
   },
   footerText: {
     fontFamily: Fonts.body,
-    fontSize: FontSizes.nano,
-    color: Colors.textMuted,
+    fontSize: 9,
+    color: 'rgba(255,255,255,0.12)',
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
-  refreshHint: {
+  pullHint: {
     fontFamily: Fonts.body,
-    fontSize: 8,
-    color: 'rgba(255,255,255,0.1)',
+    fontSize: 9,
+    color: 'rgba(255,255,255,0.08)',
     textAlign: 'center',
-    marginTop: Spacing.lg,
+    marginTop: 12,
   },
 
-  // Loading state
-  loadingContainer: {
+  /* ── states ── */
+  loadingWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 120,
+  },
+  loadingText: {
+    fontFamily: Fonts.body,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.25)',
+    marginTop: 16,
+  },
+  errorWrap: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 100,
   },
-  loadingText: {
-    fontFamily: Fonts.body,
-    fontSize: FontSizes.bodySmall,
-    color: Colors.textTertiary,
-    marginTop: Spacing.md,
-  },
-
-  // Error state
-  errorContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 80,
-  },
-  errorText: {
+  errorTitle: {
     fontFamily: Fonts.bodySemiBold,
-    fontSize: FontSizes.bodyLarge,
-    color: Colors.textPrimary,
-    marginBottom: Spacing.sm,
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.7)',
+    marginBottom: 8,
   },
-  errorSubtext: {
+  errorSub: {
     fontFamily: Fonts.body,
-    fontSize: FontSizes.bodySmall,
-    color: Colors.textTertiary,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.3)',
     textAlign: 'center',
-    marginBottom: Spacing.xl,
+    marginBottom: 24,
+    paddingHorizontal: 40,
   },
-  retryButton: {
-    backgroundColor: Colors.maroonSubtle,
+  retryBtn: {
+    backgroundColor: 'rgba(123,31,31,0.12)',
     borderWidth: 1,
-    borderColor: 'rgba(123,31,31,0.25)',
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.xxl,
-    paddingVertical: Spacing.md,
+    borderColor: 'rgba(123,31,31,0.2)',
+    borderRadius: 12,
+    paddingHorizontal: 28,
+    paddingVertical: 12,
   },
   retryText: {
     fontFamily: Fonts.bodySemiBold,
-    fontSize: FontSizes.body,
+    fontSize: 13,
     color: Colors.goldMuted,
   },
 });
